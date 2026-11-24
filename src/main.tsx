@@ -332,7 +332,7 @@ Devvit.addCustomPostType({
   },
 });
 
-// Subreddit Launcher Menu Item
+// Subreddit & Post Launcher Menu Items
 Devvit.addMenuItem({
   label: '⚖️ Launch KarmaCourt Trial',
   location: 'subreddit',
@@ -341,22 +341,76 @@ Devvit.addMenuItem({
     const subreddit = await reddit.getCurrentSubreddit();
     const docket = getTodayDocket();
 
-    await reddit.submitPost({
+    const post = await reddit.submitCustomPost({
       title: `⚖️ KarmaCourt [${docket.caseNumber}]: ${docket.title}`,
       subredditName: subreddit.name,
-      preview: (
-        <vstack padding="medium" alignment="middle center">
-          <text size="large" weight="bold" color="#FF4500">
-            Loading Courtroom Evidence Locker...
-          </text>
-        </vstack>
-      ),
+      entry: 'default',
     });
 
     ui.showToast({
       text: `⚖️ Trial docket posted to r/${subreddit.name}!`,
       appearance: 'success',
     });
+    ui.navigateTo(post);
+  },
+});
+
+Devvit.addMenuItem({
+  label: '⚖️ Launch KarmaCourt Trial',
+  location: 'post',
+  onPress: async (_event, context) => {
+    const { reddit, ui } = context;
+    const subreddit = await reddit.getCurrentSubreddit();
+    const docket = getTodayDocket();
+
+    const post = await reddit.submitCustomPost({
+      title: `⚖️ KarmaCourt [${docket.caseNumber}]: ${docket.title}`,
+      subredditName: subreddit.name,
+      entry: 'default',
+    });
+
+    ui.showToast({
+      text: `⚖️ Trial docket posted to r/${subreddit.name}!`,
+      appearance: 'success',
+    });
+    ui.navigateTo(post);
+  },
+});
+
+// Auto-Launch on AppInstall and AppUpgrade
+Devvit.addTrigger({
+  event: 'AppInstall',
+  onEvent: async (_event, context) => {
+    try {
+      const { reddit } = context;
+      const subreddit = await reddit.getCurrentSubreddit();
+      const docket = getTodayDocket();
+      await reddit.submitCustomPost({
+        title: `⚖️ KarmaCourt [${docket.caseNumber}]: ${docket.title}`,
+        subredditName: subreddit.name,
+        entry: 'default',
+      });
+    } catch (e) {
+      console.error('AppInstall trigger error:', e);
+    }
+  },
+});
+
+Devvit.addTrigger({
+  event: 'AppUpgrade',
+  onEvent: async (_event, context) => {
+    try {
+      const { reddit } = context;
+      const subreddit = await reddit.getCurrentSubreddit();
+      const docket = getTodayDocket();
+      await reddit.submitCustomPost({
+        title: `⚖️ KarmaCourt [${docket.caseNumber}]: ${docket.title}`,
+        subredditName: subreddit.name,
+        entry: 'default',
+      });
+    } catch (e) {
+      console.error('AppUpgrade trigger error:', e);
+    }
   },
 });
 
