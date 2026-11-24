@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KarmaCourt — Human Crafted Hackathon Poster</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Paytone One, Newsreader, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600&family=Paytone+One&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --paper: #F6EFE3;
+      --paper-dark: #ECE1CF;
+      --manila: #E6D4B8;
+      --ink: #1C1917;
+      --reddit-orange: #FF4500;
+      --crimson-stamp: #C22A22;
+      --emerald-stamp: #15803D;
+      --gold-stamp: #D97706;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      width: 1600px;
+      height: 900px;
+      overflow: hidden;
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: 'Newsreader', serif;
+      position: relative;
+    }
+
+    /* Subtle Newsprint Halftone Texture */
+    .halftone-bg {
+      background-image: 
+        radial-gradient(rgba(28, 25, 23, 0.07) 1.2px, transparent 1.2px);
+      background-size: 14px 14px;
+    }
+
+    /* Giant Poster Title with Honest Riso Red Ink Misregistration */
+    .poster-title {
+      font-family: 'Paytone One', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      line-height: 0.88;
+      color: var(--ink);
+      text-shadow: 4px 4px 0 var(--reddit-orange);
+    }
+
+    /* Rubber Stamp Aesthetic */
+    .rubber-stamp {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      text-transform: uppercase;
+      border: 3.5px dashed;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.08em;
+    }
+
+    .stamp-red {
+      color: var(--crimson-stamp);
+      border-color: var(--crimson-stamp);
+      background: rgba(194, 42, 34, 0.05);
+    }
+
+    .stamp-green {
+      color: var(--emerald-stamp);
+      border-color: var(--emerald-stamp);
+      background: rgba(21, 128, 61, 0.05);
+    }
+
+    .stamp-orange {
+      color: var(--reddit-orange);
+      border-color: var(--reddit-orange);
+      background: rgba(255, 69, 0, 0.06);
+    }
+
+    /* Paperclip */
+    .paperclip {
+      width: 22px;
+      height: 54px;
+      border: 4px solid #78716C;
+      border-radius: 12px;
+      position: absolute;
+      top: -20px;
+      left: 45px;
+      z-index: 30;
+      background: transparent;
+      box-shadow: 2px 3px 0 rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body class="halftone-bg flex flex-col justify-between p-8 border-[12px] border-[#2A241F]">
+
+  <!-- ========================================================
+       TOP SECTION: COURTROOM GAZETTE MASTHEAD
+       ======================================================== -->
+  <header>
+    <!-- Top Meta Row -->
+    <div class="flex items-center justify-between text-xs font-mono font-bold tracking-widest uppercase border-b-2 border-[#1C1917] pb-1.5 text-[#44403C]">
+      <div class="flex items-center gap-2.5">
+        <span class="bg-[#1C1917] text-white px-2 py-0.5 font-black text-[10px]">CASE DISPATCH</span>
+        <span>VOL. 1 • DEVPOST HACKATHON 2026</span>
+        <span>•</span>
+        <span>REDDIT DEVELOPER PLATFORM</span>
+      </div>
+
+      <div class="flex items-center gap-2 text-[#FF4500] font-black">
+        <span>★ REDDIT'S GAME OF THE DAY OFFICIAL CONTENDER ★</span>
+      </div>
+
+      <div class="flex items-center gap-2 text-[11px]">
+        <span>DEVVIT CUSTOM POST</span>
+        <span>•</span>
+        <span>60-SEC ASYNCHRONOUS TRIAL</span>
+      </div>
+    </div>
+
+    <!-- Main Headline Banner -->
+    <div class="flex items-center justify-between pt-2.5 pb-2 border-b-4 border-[#1C1917]">
+      <div class="flex-1">
+        <h1 class="poster-title text-[86px]">
+          KARMA COURT
+        </h1>
+        <div class="flex items-center gap-3 mt-0.5 font-mono text-[11px] font-black tracking-widest text-[#78350F] uppercase">
+          <span>THE DAILY INTERACTIVE REDDIT TRIBUNAL</span>
+          <span>✦</span>
+          <span>HEAR THE EVIDENCE • WEIGH THE DELIBERATION • PASS FINAL VERDICT</span>
+        </div>
+      </div>
+
+      <!-- Right Masthead Stamp Seal -->
+      <div class="rubber-stamp stamp-orange px-5 py-2.5 rounded-2xl transform rotate-2 shrink-0">
+        <div class="flex flex-col items-center leading-none text-center">
+          <span class="text-[9px] font-mono tracking-tighter">REDDIT DEV PLATFORM</span>
+          <span class="text-lg font-black mt-0.5">GAME OF THE DAY</span>
+          <span class="text-[9px] tracking-widest mt-0.5">DEVPOST OFFICIAL ENTRY</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ========================================================
+       CENTER STAGE: PHYSICAL CASE FILE & JUDGE SNOO
+       ======================================================== -->
+  <main class="grid grid-cols-12 gap-7 items-stretch my-auto py-2">
+
+    <!-- LEFT 7 COLS: THE PHYSICAL MANILA CASE FILE DOCKET -->
+    <div class="col-span-7 bg-[#EADCC6] rounded-2xl p-6 border-3 border-[#1C1917] shadow-[6px_6px_0_#1C1917] relative flex flex-col justify-between">
+      
+      <!-- Realistic Paperclip -->
+      <div class="paperclip"></div>
+
+      <!-- Manila Folder Tab Header -->
+      <div class="flex items-center justify-between border-b-2 border-[#1C1917]/25 pb-2.5 mb-2.5 pl-12">
+        <div class="flex items-center gap-2.5">
+          <span class="font-mono text-xs font-black bg-[#1C1917] text-[#F6EFE3] px-2.5 py-0.5 rounded">
+            DOCKET #1043
+          </span>
+          <span class="font-mono text-xs font-bold text-[#57534E] uppercase tracking-wider">
+            SUBREDDIT: r/AmItheAsshole • TODAY'S TRIAL
+          </span>
+        </div>
+
+        <!-- Red Confidential Stamp -->
+        <div class="rubber-stamp stamp-red px-2.5 py-0.5 rounded text-[10px] transform -rotate-2">
+          CONFIDENTIAL EVIDENCE
+        </div>
+      </div>
+
+      <!-- Case Dilemma Story -->
+      <div class="mb-3">
+        <h2 class="text-xl font-bold leading-tight text-[#1C1917] mb-1.5 font-display">
+          "The First-Class Seat Extortion: Am I The Asshole for waking a stranger who took my paid 1A seat?"
+        </h2>
+        <p class="text-[14px] text-[#44403C] leading-relaxed italic border-l-4 border-[#FF4500] pl-3.5 bg-white/50 py-1.5 rounded-r-lg">
+          "I paid $1,800 out-of-pocket for seat 1A on a 9-hour transatlantic flight. I arrived to find an exhausted mother asleep in my seat. Her husband shoved a $50 economy voucher in my face and told me to 'have some compassion'. When I refused and summoned the purser, the whole cabin glared at me. AITA?"
+        </p>
+      </div>
+
+      <!-- The 3 Attached Exhibits (Deduction Mechanics) -->
+      <div class="grid grid-cols-3 gap-2.5 mb-3 font-mono text-xs">
+        <div class="bg-white/85 p-2.5 rounded-lg border border-[#1C1917]/30 shadow-sm">
+          <span class="font-bold text-[#FF4500] block text-[9px] uppercase">EXHIBIT A</span>
+          <span class="font-black text-[#1C1917] block text-[11px] mt-0.5">Boarding Pass 1A</span>
+          <span class="text-[9px] text-[#78716C] block mt-0.5">Paid ticket timestamp 3 mos prior.</span>
+        </div>
+        <div class="bg-white/85 p-2.5 rounded-lg border border-[#1C1917]/30 shadow-sm">
+          <span class="font-bold text-[#FF4500] block text-[9px] uppercase">EXHIBIT B</span>
+          <span class="font-black text-[#1C1917] block text-[11px] mt-0.5">Purser Log</span>
+          <span class="text-[9px] text-[#78716C] block mt-0.5">Defendant refused initial requests.</span>
+        </div>
+        <div class="bg-amber-100/95 p-2.5 rounded-lg border-2 border-amber-500/60 shadow-sm">
+          <span class="font-black text-amber-700 block text-[9px] uppercase">SMOKING GUN 🔥</span>
+          <span class="font-black text-[#1C1917] block text-[11px] mt-0.5">FAA Regulation</span>
+          <span class="text-[9px] text-[#78716C] block mt-0.5">Manifest tampering is a felony.</span>
+        </div>
+      </div>
+
+      <!-- Voting Verdict Strip Inside Docket -->
+      <div class="flex items-center justify-between pt-2 border-t-2 border-[#1C1917]/20 font-mono text-xs">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FF4500]"></span>
+          <span class="font-black text-[#1C1917] text-[11px]">COMMUNITY JURY BREAKDOWN:</span>
+        </div>
+        <div class="flex items-center gap-4 font-black text-[11px]">
+          <span class="text-[#C22A22]">YTA: 68% (GUILTY)</span>
+          <span class="text-[#15803D]">NTA: 32% (ACQUITTED)</span>
+          <span class="text-[#78716C]">TOTAL JURORS: 14,291</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT 5 COLS: JUDGE SNOO MASCOT + TACTILE STAMPS -->
+    <div class="col-span-5 flex flex-col justify-between items-center text-center pl-2">
+      
+      <!-- Top: Handcrafted Judge Snoo with British Judge Wig & Gavel -->
+      <div class="relative flex flex-col items-center">
+        
+        <!-- Authentic Handcrafted Judge Snoo SVG -->
+        <svg width="200" height="190" viewBox="0 0 220 210" fill="none" class="filter drop-shadow-[4px_5px_0_#1C1917]">
+          <!-- Classic Powdered Judge Wig (White Curly Hair) -->
+          <path d="M55 75 C45 45, 65 15, 110 15 C155 15, 175 45, 165 75 C185 85, 185 115, 170 135 C175 160, 160 175, 145 175 C140 160, 140 145, 140 135 C130 140, 90 140, 80 135 C80 145, 80 160, 75 175 C60 175, 45 160, 50 135 C35 115, 35 85, 55 75 Z" fill="#F5F5F4" stroke="#1C1917" stroke-width="3"/>
+          <circle cx="65" cy="95" r="12" fill="#E7E5E4" stroke="#1C1917" stroke-width="2"/>
+          <circle cx="55" cy="120" r="12" fill="#E7E5E4" stroke="#1C1917" stroke-width="2"/>
+          <circle cx="155" cy="95" r="12" fill="#E7E5E4" stroke="#1C1917" stroke-width="2"/>
+          <circle cx="165" cy="120" r="12" fill="#E7E5E4" stroke="#1C1917" stroke-width="2"/>
+
+          <!-- Reddit Snoo Head Inside Wig -->
+          <ellipse cx="110" cy="85" rx="42" ry="32" fill="#FFFFFF" stroke="#1C1917" stroke-width="3"/>
+          
+          <!-- Snoo Orange Eyes -->
+          <circle cx="95" cy="82" r="6.5" fill="#FF4500" stroke="#1C1917" stroke-width="1.5"/>
+          <circle cx="125" cy="82" r="6.5" fill="#FF4500" stroke="#1C1917" stroke-width="1.5"/>
+          
+          <!-- Serious Court Judge Smile / Neutral Mouth -->
+          <path d="M102 96 Q110 99, 118 96" stroke="#1C1917" stroke-width="2.5" stroke-linecap="round"/>
+
+          <!-- Judge Robe / Collar -->
+          <path d="M70 140 L150 140 L165 205 L55 205 Z" fill="#1C1917"/>
+          <path d="M100 140 L120 140 L125 180 L110 175 L95 180 Z" fill="#FFFFFF" stroke="#E7E5E4" stroke-width="1.5"/>
+
+          <!-- Judge Wooden Gavel in Hand -->
+          <g transform="rotate(25 160 150)">
+            <rect x="155" y="110" width="10" height="70" rx="5" fill="#9A3412" stroke="#1C1917" stroke-width="2"/>
+            <rect x="135" y="100" width="50" height="24" rx="5" fill="#7C2D12" stroke="#1C1917" stroke-width="2.5"/>
+            <rect x="145" y="100" width="6" height="24" fill="#F59E0B"/>
+            <rect x="169" y="100" width="6" height="24" fill="#F59E0B"/>
+          </g>
+
+          <!-- Golden Scales of Justice Hanging from Mouth/Antenna -->
+          <line x1="110" y1="20" x2="110" y2="4" stroke="#1C1917" stroke-width="3"/>
+          <circle cx="110" cy="3" r="5" fill="#FF4500" stroke="#1C1917" stroke-width="2"/>
+        </svg>
+
+        <span class="font-mono text-[11px] font-black uppercase text-[#1C1917] mt-1 tracking-wider bg-white/80 px-3 py-0.5 rounded-full border border-[#1C1917]/30 shadow-sm">
+          HONORABLE JUDGE SNOO PRESIDING
+        </span>
+      </div>
+
+      <!-- The Two Massive Physical Rubber Stamp Choices -->
+      <div class="w-full flex flex-col gap-3 mt-1.5">
+        
+        <!-- CRIMSON GUILTY STAMP -->
+        <div class="rubber-stamp stamp-red py-3 px-5 rounded-2xl transform -rotate-2 shadow-[4px_4px_0_#C22A22]">
+          <div class="flex items-center justify-between w-full">
+            <span class="text-2xl font-black">YTA • GUILTY</span>
+            <span class="text-xs font-mono font-bold">DOWNVOTE VERDICT ▼</span>
+          </div>
+        </div>
+
+        <!-- FOREST GREEN ACQUITTED STAMP -->
+        <div class="rubber-stamp stamp-green py-3 px-5 rounded-2xl transform rotate-2 shadow-[4px_4px_0_#15803D]">
+          <div class="flex items-center justify-between w-full">
+            <span class="text-2xl font-black">NTA • ACQUITTED</span>
+            <span class="text-xs font-mono font-bold">UPVOTE VERDICT ▲</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================
+       BOTTOM FOOTER: EDITORIAL COLOPHON & DEVPOST DETAILS
+       ======================================================== -->
+  <footer class="border-t-4 border-[#1C1917] pt-2.5 flex items-center justify-between font-mono text-xs">
+    
+    <!-- Left: Core Unique Features -->
+    <div class="flex items-center gap-4 text-[#44403C] font-extrabold text-[11px]">
+      <div class="flex items-center gap-1.5">
+        <span class="text-base text-[#FF4500]">✦</span>
+        <span>EVIDENCE INSPECTION</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-base text-[#FF4500]">✦</span>
+        <span>REDIS DOUBLE-VOTE PREVENTION</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-base text-[#FF4500]">✦</span>
+        <span>SPOILER-FREE WORDLE SHARE</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-base text-[#FF4500]">✦</span>
+        <span>IN-FEED DEVVIT POST</span>
+      </div>
+    </div>
+
+    <!-- Right: Open Source Attribution -->
+    <div class="flex items-center gap-2">
+      <span class="bg-[#1C1917] text-white px-3 py-1 rounded font-black tracking-wider text-[11px]">
+        GITHUB: Bittu45-ro/KarmaCourt
+      </span>
+    </div>
+
+  </footer>
+
+</body>
+</html>
