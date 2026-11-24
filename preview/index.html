@@ -3,439 +3,975 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KarmaCourt - Interactive Visual Preview</title>
+  <title>KarmaCourt - The Daily Reddit Trial</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Paytone+One&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
   <style>
+    :root {
+      --paper-cream: #FAF6EE;
+      --paper-warm: #F4EBD9;
+      --paper-dark: #E8DCC4;
+      --ink-black: #141413;
+      --ink-charcoal: #2A2826;
+      --court-orange: #FF4500;
+      --court-orange-dark: #D43800;
+      --court-gold: #DDA15E;
+      --stamp-red: #C1121F;
+      --stamp-green: #1B7A43;
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at 50% 10%, #151C2C 0%, #07090E 75%);
+      background-color: #ECE5D8;
+      background-image: 
+        radial-gradient(#D6CABA 1px, transparent 1px),
+        linear-gradient(180deg, #F0EAE0 0%, #E3D9C8 100%);
+      background-size: 24px 24px, 100% 100%;
+      color: var(--ink-black);
+      min-height: 100vh;
     }
-    .cinzel {
-      font-family: 'Cinzel', serif;
+
+    .font-paytone { font-family: 'Paytone One', sans-serif; }
+    .font-cinzel { font-family: 'Cinzel Decorative', serif; }
+    .font-mono { font-family: 'Space Mono', monospace; }
+
+    /* Risograph Offset Shadow Effect */
+    .riso-shadow-orange {
+      filter: drop-shadow(4px 4px 0px #FF4500);
     }
-    .mono {
-      font-family: 'Space Mono', monospace;
+    .riso-shadow-black {
+      filter: drop-shadow(4px 4px 0px #141413);
     }
-    .court-card {
-      background: linear-gradient(180deg, rgba(26, 34, 51, 0.75) 0%, rgba(13, 17, 26, 0.95) 100%);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
+    .box-riso-black {
+      box-shadow: 4px 4px 0px #141413;
     }
-    .gavel-stamp {
-      animation: stampDrop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    .box-riso-black-lg {
+      box-shadow: 6px 6px 0px #141413;
     }
-    @keyframes stampDrop {
-      0% { transform: scale(3.5) rotate(-18deg); opacity: 0; }
-      70% { transform: scale(0.92) rotate(-8deg); opacity: 1; }
-      100% { transform: scale(1) rotate(-10deg); opacity: 0.95; }
+    .box-riso-orange {
+      box-shadow: 5px 5px 0px #FF4500;
     }
-    .screen-shake {
-      animation: shake 0.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+
+    /* Manila Folder Docket Styles */
+    .manila-folder {
+      background: linear-gradient(175deg, #FAF6EE 0%, #F5ECDB 40%, #EFE3CE 100%);
+      border: 3px solid #141413;
+      box-shadow: 8px 10px 0px #141413, 0px 20px 40px rgba(0,0,0,0.08);
+      position: relative;
     }
-    @keyframes shake {
-      10%, 90% { transform: translate3d(-2px, 0, 0); }
-      20%, 80% { transform: translate3d(3px, 0, 0); }
-      30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
-      40%, 60% { transform: translate3d(5px, 0, 0); }
+
+    .folder-tab {
+      background: #F5ECDB;
+      border: 3px solid #141413;
+      border-bottom: none;
+      box-shadow: 4px -2px 0px #141413;
     }
+
+    /* Halftone Overlay */
+    .halftone-overlay {
+      background-image: radial-gradient(#141413 1px, transparent 1px);
+      background-size: 8px 8px;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    /* Rubber Stamp Animations */
+    @keyframes stampSlam {
+      0% { transform: scale(3) rotate(-28deg); opacity: 0; }
+      60% { transform: scale(0.92) rotate(-10deg); opacity: 1; }
+      80% { transform: scale(1.05) rotate(-13deg); }
+      100% { transform: scale(1) rotate(-12deg); opacity: 0.95; }
+    }
+    .rubber-stamp-anim {
+      animation: stampSlam 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* Screen Shake on Gavel Drop */
+    @keyframes courtShake {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      15% { transform: translate(-4px, 2px) rotate(-0.5deg); }
+      30% { transform: translate(4px, -3px) rotate(0.5deg); }
+      45% { transform: translate(-3px, -2px) rotate(-0.3deg); }
+      60% { transform: translate(3px, 2px) rotate(0.3deg); }
+      75% { transform: translate(-1px, 1px) rotate(0deg); }
+    }
+    .shake-active {
+      animation: courtShake 0.35s ease-in-out;
+    }
+
+    /* Tactile Buttons */
     .tactile-btn {
-      transition: all 0.15s ease;
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
+      transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .tactile-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 rgba(0, 0, 0, 0.4);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #141413;
     }
     .tactile-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #141413;
     }
-    .evidence-item {
+
+    /* Polaroid Exhibit Cards */
+    .polaroid-card {
+      background: #FFFFFF;
+      border: 2px solid #141413;
+      box-shadow: 3px 4px 0px #141413;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .evidence-item:hover {
-      border-color: rgba(255, 69, 0, 0.5);
-      background: rgba(30, 41, 59, 0.8);
-      transform: translateY(-2px);
+    .polaroid-card:hover {
+      transform: translateY(-3px) rotate(1deg);
+      box-shadow: 5px 7px 0px #141413;
+    }
+
+    /* Washi Tape Accent */
+    .washi-tape {
+      background: rgba(255, 69, 0, 0.2);
+      border-left: 2px dashed rgba(255, 69, 0, 0.5);
+      border-right: 2px dashed rgba(255, 69, 0, 0.5);
+    }
+
+    /* Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
     }
   </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col items-center justify-center p-4">
+<body class="flex flex-col items-center justify-start p-3 sm:p-6 md:p-8">
 
-  <!-- Ambient Sound Control Bar -->
-  <div class="w-full max-w-xl flex items-center justify-between mb-3 px-2 text-xs text-slate-400">
-    <div class="flex items-center gap-2">
-      <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-      <span class="font-bold tracking-wider text-slate-300">REDDIT DEVVIT RUNTIME v0.11</span>
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Top Bar: Courtroom Gazette Dispatch -->
+  <header class="w-full max-w-2xl flex flex-wrap items-center justify-between gap-3 mb-4 pb-2 border-b-2 border-dashed border-[#141413]/30 px-1 text-xs">
+    <div class="flex items-center gap-2 font-mono">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#FF4500] animate-ping"></span>
+      <span class="font-bold tracking-wider uppercase text-[#141413]">REDDIT OFFICIAL DEV PLATFORM</span>
+      <span class="bg-[#141413] text-[#FAF6EE] px-2 py-0.5 rounded text-[10px] font-bold">DEVVIT v0.15.6</span>
     </div>
-    <button onclick="toggleAudio()" id="soundBtn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 text-slate-300 transition">
-      <span>🔊 Audio: ON</span>
-    </button>
-  </div>
-
-  <!-- The Main Court Dossier -->
-  <div id="mainContainer" class="court-card w-full max-w-xl rounded-2xl border border-slate-700/60 p-6 relative overflow-hidden">
     
-    <!-- Top Court Gavel Header -->
-    <div class="flex items-center justify-between pb-4 border-b border-slate-800/80">
-      <div class="flex items-center gap-2.5">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-xl shadow-lg shadow-orange-500/20 border border-orange-400/30">
-          ⚖️
+    <div class="flex items-center gap-2">
+      <!-- Ambient Sound Button -->
+      <button onclick="toggleSound()" id="soundToggle" class="flex items-center gap-1.5 px-3 py-1 bg-[#FAF6EE] hover:bg-[#F4EBD9] border-2 border-[#141413] rounded-full text-[11px] font-mono font-bold box-riso-black transition">
+        <span id="soundIcon">🔊</span> <span id="soundText">SFX: ON</span>
+      </button>
+
+      <!-- Case Switcher (For Judges / Demos) -->
+      <div class="flex items-center gap-1 bg-[#FAF6EE] border-2 border-[#141413] rounded-full px-2 py-1 text-[11px] font-mono font-bold">
+        <span>CASE:</span>
+        <button onclick="switchCase(0)" id="caseBtn0" class="px-1.5 py-0.5 rounded bg-[#FF4500] text-white">#1042</button>
+        <button onclick="switchCase(1)" id="caseBtn1" class="px-1.5 py-0.5 rounded text-[#141413] hover:bg-[#E8DCC4]">#1043</button>
+        <button onclick="switchCase(2)" id="caseBtn2" class="px-1.5 py-0.5 rounded text-[#141413] hover:bg-[#E8DCC4]">#1044</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN MANILA DOCKET CONTAINER -->
+  <main id="docketContainer" class="w-full max-w-2xl manila-folder rounded-3xl p-5 sm:p-7 relative">
+    
+    <!-- Halftone Texture Layer -->
+    <div class="absolute inset-0 halftone-overlay rounded-3xl"></div>
+
+    <!-- Paperclip Graphic Top Left -->
+    <div class="absolute -top-3 left-8 z-20">
+      <svg width="28" height="54" viewBox="0 0 28 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 8V42C8 46.4183 11.5817 50 16 50C20.4183 50 24 46.4183 24 42V14C24 7.37258 18.6274 2 12 2C5.37258 2 0 7.37258 0 14V44" stroke="#68645C" stroke-width="3" stroke-linecap="round"/>
+        <path d="M9 9V43C9 47 12 51 16 51C20 51 23 47 23 43V15" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <!-- Folder Tab Top Right -->
+    <div class="absolute -top-6 right-8 folder-tab px-4 py-1 rounded-t-xl z-10 flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-wider">
+      <span class="w-2 h-2 rounded-full bg-[#FF4500]"></span>
+      <span id="tabCaseTag">DOCKET #1042 / ACTIVE</span>
+    </div>
+
+    <!-- HEADER: The Court Mascot & Title Banner -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b-3 border-[#141413]">
+      <div class="flex items-center gap-3.5">
+        <!-- British Judge Snoo Avatar -->
+        <div class="relative w-16 h-16 rounded-2xl bg-[#FF4500] border-3 border-[#141413] box-riso-black flex items-center justify-center overflow-hidden flex-shrink-0">
+          <!-- Judge Wig & Snoo Silhouette -->
+          <svg viewBox="0 0 64 64" class="w-14 h-14">
+            <!-- White powdered wig curls -->
+            <path d="M12 28 C8 24 8 16 16 12 C24 8 40 8 48 12 C56 16 56 24 52 28 C56 32 54 44 48 46 C44 48 42 42 42 42 C42 42 40 48 32 48 C24 48 22 42 22 42 C22 42 20 48 16 46 C10 44 8 32 12 28 Z" fill="#F4F1EA" stroke="#141413" stroke-width="2.5"/>
+            <!-- Snoo Face -->
+            <circle cx="32" cy="30" r="13" fill="#FFFFFF" stroke="#141413" stroke-width="2"/>
+            <!-- Antenna -->
+            <path d="M32 17 L36 10 C37 8 40 8 40 10 C40 12 37 12 37 12" stroke="#141413" stroke-width="2" fill="none"/>
+            <circle cx="40" cy="10" r="2.5" fill="#FF4500"/>
+            <!-- Snoo Orange Eyes -->
+            <circle cx="28" cy="30" r="2.5" fill="#FF4500"/>
+            <circle cx="36" cy="30" r="2.5" fill="#FF4500"/>
+            <!-- Smile -->
+            <path d="M28 35 Q32 38 36 35" stroke="#141413" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Robe & Lace Jabot -->
+            <path d="M20 46 L44 46 L48 64 L16 64 Z" fill="#141413"/>
+            <path d="M28 46 L32 56 L36 46 Z" fill="#FFFFFF"/>
+          </svg>
         </div>
+
         <div>
-          <h1 class="cinzel text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-orange-100 to-orange-400">
-            KARMA COURT
-          </h1>
-          <p class="text-[10px] tracking-widest uppercase text-orange-400 font-bold">The Daily Reddit Trial</p>
+          <div class="flex items-center gap-2">
+            <h1 class="font-paytone text-2xl sm:text-3xl tracking-tight text-[#141413]">
+              KARMA COURT
+            </h1>
+            <span class="bg-[#141413] text-[#FAF6EE] font-mono text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+              DAILY TRIAL
+            </span>
+          </div>
+          <p class="font-mono text-xs text-[#2A2826] font-semibold mt-0.5 flex items-center gap-2">
+            <span>Reddit's Moral Tribunal</span>
+            <span>•</span>
+            <span class="text-[#FF4500]">Midnight UTC Reset</span>
+          </p>
         </div>
       </div>
 
-      <!-- Streak & Timer Badge -->
-      <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700/60 px-3 py-1.5 rounded-full shadow-inner">
-        <span class="text-orange-400 text-xs font-black flex items-center gap-1">
-          🔥 <span id="streakNum">4</span> DAY STREAK
+      <!-- Streak & Score Badge -->
+      <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-1 bg-[#F5ECDB] border-2 border-[#141413] box-riso-black px-3.5 py-1.5 rounded-xl">
+        <div class="flex items-center gap-1.5">
+          <span class="text-base">🔥</span>
+          <span class="font-paytone text-sm text-[#FF4500]" id="streakCount">4-DAY STREAK</span>
+        </div>
+        <span class="font-mono text-[10px] text-[#2A2826] font-bold uppercase tracking-wider">
+          Rank: Senior Juror
         </span>
-        <span class="text-slate-600 text-xs">|</span>
-        <span class="mono text-[11px] text-slate-400">⏳ 14h 22m</span>
       </div>
     </div>
 
-    <!-- Case Metadata Bar -->
-    <div class="flex items-center justify-between mt-4 mb-3">
-      <span class="mono text-xs font-bold text-slate-400 bg-slate-800/50 px-2.5 py-0.5 rounded border border-slate-700/40">
-        CASE #1042
-      </span>
-      <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400/90 flex items-center gap-1">
-        ⭐ Grand Jury Case of the Day
-      </span>
-    </div>
-
-    <!-- The Allegation Dossier -->
-    <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 relative mb-4 shadow-inner">
-      <div class="flex items-center gap-2 mb-1.5">
-        <span class="text-rose-400 text-xs font-bold tracking-wider uppercase flex items-center gap-1">
-          🚨 The Allegation
-        </span>
+    <!-- CASE DOSSIER HEADLINE -->
+    <div class="mt-5 bg-[#FAF6EE] border-3 border-[#141413] box-riso-black rounded-2xl p-4 sm:p-5 relative">
+      <!-- Confidential Stamp Badge -->
+      <div class="absolute -top-3 right-4 bg-[#C1121F] text-white font-mono text-[10px] font-black uppercase px-2.5 py-0.5 rounded tracking-wider border border-[#141413] transform rotate-2">
+        EXHIBIT FILE OPEN
       </div>
-      <h2 class="text-base font-bold text-slate-100 leading-snug mb-2">
-        "I laced my stolen lunch with Carolina Reaper sauce. Now an executive is in the ER and threatening HR action."
+
+      <div class="flex items-center gap-2 font-mono text-xs text-[#FF4500] font-bold uppercase mb-1">
+        <span id="caseDocketId">DOCKET #1042</span>
+        <span>•</span>
+        <span id="caseOriginSub">r/AmItheAsshole</span>
+      </div>
+
+      <h2 id="caseTitle" class="font-paytone text-xl sm:text-2xl text-[#141413] leading-tight">
+        The Carolina Reaper Lunch Trap
       </h2>
-      <p class="text-xs text-slate-300/90 leading-relaxed">
-        For 3 weeks, someone kept stealing my clearly labeled lunch from the company fridge. Management ignored my complaints. On Friday, I drenched my turkey sub with Carolina Reaper sauce. An executive choked, had a medical reaction, and is now demanding I be fired.
+
+      <!-- The Accusation Statement -->
+      <p id="caseSummary" class="text-sm sm:text-base text-[#2A2826] font-medium leading-relaxed mt-2.5 pt-2.5 border-t border-dashed border-[#141413]/20">
+        My homemade lunch was stolen from the office fridge 4 times in two weeks. HR refused to intervene. 
+        So on Friday, I made my personal lunch with a drop of certified Carolina Reaper sauce. 
+        A senior director stole it, ate three bites, and had to be taken to urgent care. 
+        Now HR threatens to fire me for "poisoning" a colleague. Am I the Asshole?
       </p>
+
+      <!-- Key Legal Stems -->
+      <div class="mt-3 flex flex-wrap items-center gap-2 text-xs font-mono">
+        <span class="bg-[#E8DCC4] border border-[#141413] px-2 py-0.5 rounded font-bold">ACCUSED: u/SpicyRevenge</span>
+        <span class="bg-[#E8DCC4] border border-[#141413] px-2 py-0.5 rounded font-bold">CHARGE: Fridge Trap</span>
+        <span class="bg-[#FF4500]/15 text-[#D43800] border border-[#FF4500] px-2 py-0.5 rounded font-bold">STATUS: Deliberating</span>
+      </div>
     </div>
 
-    <!-- Interactive Evidence Locker -->
-    <div class="mb-5">
+    <!-- EVIDENCE LOCKER: POLAROIDS & MEMOS -->
+    <div class="mt-6">
       <div class="flex items-center justify-between mb-2 px-1">
-        <span class="text-xs font-bold text-sky-400 tracking-wider uppercase flex items-center gap-1.5">
-          🗂️ Evidence Locker <span class="text-slate-400 font-normal">(Review to unlock verdict)</span>
-        </span>
-        <span id="evidenceProgress" class="mono text-[11px] text-sky-300 font-bold bg-sky-950/60 border border-sky-800/50 px-2 py-0.5 rounded-full">
-          0 / 3 Reviewed
-        </span>
+        <div class="flex items-center gap-2 font-paytone text-base text-[#141413]">
+          <span>🔍</span>
+          <span>EVIDENCE LOCKER</span>
+          <span id="evidenceCounter" class="font-mono text-xs font-bold text-[#FF4500] bg-[#FF4500]/10 px-2 py-0.5 rounded-full border border-[#FF4500]/30">
+            0/3 INSPECTED
+          </span>
+        </div>
+        <span class="font-mono text-[11px] text-[#2A2826]/70">Tap each exhibit to inspect</span>
       </div>
 
-      <!-- Evidence Cards Grid -->
-      <div class="grid grid-cols-3 gap-2">
-        <button onclick="inspectEvidence(1)" id="evBtn1" class="evidence-item tactile-btn bg-slate-900/90 border border-slate-700/70 rounded-xl p-2.5 text-left flex flex-col justify-between h-20">
-          <span class="text-xs font-bold text-slate-200 block truncate">🏷️ Exhibit A</span>
-          <span class="text-[10px] text-slate-400 leading-tight">The Labeled Box</span>
-          <span id="evStatus1" class="text-[10px] text-slate-500 font-mono">🔒 Locked</span>
+      <!-- 3 Tangible Evidence Buttons -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- Exhibit A -->
+        <button onclick="inspectExhibit(0)" id="exBtn0" class="polaroid-card p-3 rounded-xl text-left flex flex-col justify-between h-28 relative group cursor-pointer">
+          <div class="washi-tape absolute -top-2 left-6 right-6 h-3 rounded-sm opacity-70"></div>
+          <div class="flex items-center justify-between font-mono text-xs font-bold text-[#141413]">
+            <span id="exTag0">EXHIBIT A</span>
+            <span id="exStatus0" class="text-xs text-[#2A2826]/50">UNINSPECTED</span>
+          </div>
+          <div>
+            <div id="exTitle0" class="font-paytone text-sm text-[#141413] group-hover:text-[#FF4500] transition">
+              The Tupperware Label
+            </div>
+            <p id="exShort0" class="text-[11px] text-[#2A2826]/70 line-clamp-1 mt-0.5">
+              Photo of red lid labeled in Sharpie
+            </p>
+          </div>
+          <div class="font-mono text-[10px] text-[#FF4500] font-bold flex items-center gap-1">
+            <span>Inspect File</span> <span>→</span>
+          </div>
         </button>
 
-        <button onclick="inspectEvidence(2)" id="evBtn2" class="evidence-item tactile-btn bg-slate-900/90 border border-slate-700/70 rounded-xl p-2.5 text-left flex flex-col justify-between h-20">
-          <span class="text-xs font-bold text-slate-200 block truncate">💬 Exhibit B</span>
-          <span class="text-[10px] text-slate-400 leading-tight">HR Email Chain</span>
-          <span id="evStatus2" class="text-[10px] text-slate-500 font-mono">🔒 Locked</span>
+        <!-- Exhibit B -->
+        <button onclick="inspectExhibit(1)" id="exBtn1" class="polaroid-card p-3 rounded-xl text-left flex flex-col justify-between h-28 relative group cursor-pointer">
+          <div class="washi-tape absolute -top-2 left-6 right-6 h-3 rounded-sm opacity-70"></div>
+          <div class="flex items-center justify-between font-mono text-xs font-bold text-[#141413]">
+            <span id="exTag1">EXHIBIT B</span>
+            <span id="exStatus1" class="text-xs text-[#2A2826]/50">UNINSPECTED</span>
+          </div>
+          <div>
+            <div id="exTitle1" class="font-paytone text-sm text-[#141413] group-hover:text-[#FF4500] transition">
+              HR Email Trail
+            </div>
+            <p id="exShort1" class="text-[11px] text-[#2A2826]/70 line-clamp-1 mt-0.5">
+              "Company does not police lunches"
+            </p>
+          </div>
+          <div class="font-mono text-[10px] text-[#FF4500] font-bold flex items-center gap-1">
+            <span>Inspect File</span> <span>→</span>
+          </div>
         </button>
 
-        <button onclick="inspectEvidence(3)" id="evBtn3" class="evidence-item tactile-btn bg-slate-900/90 border border-amber-900/50 rounded-xl p-2.5 text-left flex flex-col justify-between h-20">
-          <span class="text-xs font-bold text-amber-300 block truncate">📜 Exhibit C</span>
-          <span class="text-[10px] text-amber-200/80 leading-tight">Smoking Gun</span>
-          <span id="evStatus3" class="text-[10px] text-amber-500/70 font-mono">🔒 Locked</span>
+        <!-- Exhibit C -->
+        <button onclick="inspectExhibit(2)" id="exBtn2" class="polaroid-card p-3 rounded-xl text-left flex flex-col justify-between h-28 relative group cursor-pointer">
+          <div class="washi-tape absolute -top-2 left-6 right-6 h-3 rounded-sm opacity-70"></div>
+          <div class="flex items-center justify-between font-mono text-xs font-bold text-[#141413]">
+            <span id="exTag2">EXHIBIT C</span>
+            <span id="exStatus2" class="text-xs text-[#2A2826]/50">UNINSPECTED</span>
+          </div>
+          <div>
+            <div id="exTitle2" class="font-paytone text-sm text-[#141413] group-hover:text-[#FF4500] transition">
+              Sauce Receipt
+            </div>
+            <p id="exShort2" class="text-[11px] text-[#2A2826]/70 line-clamp-1 mt-0.5">
+              Proof of personal regular consumption
+            </p>
+          </div>
+          <div class="font-mono text-[10px] text-[#FF4500] font-bold flex items-center gap-1">
+            <span>Inspect File</span> <span>→</span>
+          </div>
         </button>
       </div>
 
-      <!-- Active Evidence Drawer -->
-      <div id="evidenceDrawer" class="hidden mt-2.5 p-3 rounded-xl bg-sky-950/40 border border-sky-800/50 text-xs text-sky-100 transition-all duration-300">
-        <p id="evidenceDetailText" class="italic leading-relaxed"></p>
+      <!-- EXPANDED EVIDENCE MODAL / DOSSIER DRAWER -->
+      <div id="evidenceDrawer" class="hidden mt-3 p-4 bg-[#FFFFFF] border-3 border-[#141413] box-riso-black rounded-2xl relative">
+        <button onclick="closeEvidence()" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-[#141413] text-[#FAF6EE] flex items-center justify-center font-bold text-xs hover:bg-[#FF4500] transition">
+          ✕
+        </button>
+        <div class="flex items-center gap-2 font-mono text-xs font-bold text-[#FF4500]">
+          <span id="drawerTag">EXHIBIT A</span>
+          <span>•</span>
+          <span class="text-[#2A2826]">FORENSIC INSPECTION</span>
+        </div>
+        <h3 id="drawerTitle" class="font-paytone text-lg text-[#141413] mt-1">Tupperware Label</h3>
+        <p id="drawerDesc" class="text-sm text-[#2A2826] mt-2 leading-relaxed font-medium">
+          Evidence description goes here.
+        </p>
+        <div class="mt-3 pt-2.5 border-t border-dashed border-[#141413]/20 flex items-center justify-between">
+          <span id="drawerSignificance" class="font-mono text-xs text-[#1B7A43] font-bold">
+            ✓ Significance: Establishes clear notice of private property.
+          </span>
+          <button onclick="closeEvidence()" class="font-mono text-xs font-bold bg-[#141413] text-[#FAF6EE] px-3 py-1 rounded-lg hover:bg-[#FF4500] transition">
+            Close Dossier
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- PHASE 1: JURY VOTING BUTTONS -->
-    <div id="votingSection" class="transition-all duration-300">
-      <div class="text-center mb-2.5">
-        <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Cast Your Judgment, Juror</span>
+    <!-- JUROR BALLOT SECTION -->
+    <div class="mt-6 pt-5 border-t-3 border-[#141413]">
+      <div class="flex items-center justify-between mb-3 px-1">
+        <div class="flex items-center gap-2 font-paytone text-base text-[#141413]">
+          <span>⚖️</span>
+          <span>CAST YOUR JUROR VERDICT</span>
+        </div>
+        <span id="ballotStatusHint" class="font-mono text-[11px] font-bold text-[#FF4500]">
+          🔒 Review exhibits to unlock
+        </span>
       </div>
 
-      <div class="grid grid-cols-2 gap-2.5">
+      <!-- 4 Verdict Stamp Buttons -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="verdictButtonGroup">
         <!-- NTA Button -->
-        <button onclick="castVerdict('NTA')" class="tactile-btn bg-emerald-600 hover:bg-emerald-500 border border-emerald-400/40 text-white font-bold p-3.5 rounded-xl flex items-center justify-center gap-2 group">
-          <span class="text-lg">⚖️</span>
-          <div class="text-left">
-            <span class="block text-sm font-extrabold leading-none">NTA</span>
-            <span class="text-[10px] text-emerald-200 font-normal">Not The Asshole (Acquitted)</span>
-          </div>
+        <button onclick="castVote('NTA')" id="btnNTA" class="tactile-btn p-3 rounded-2xl border-3 border-[#141413] bg-[#E3F5EB] text-[#1B7A43] box-riso-black flex flex-col items-center justify-center text-center">
+          <span class="font-paytone text-lg leading-tight">NTA</span>
+          <span class="font-mono text-[10px] font-bold tracking-wider uppercase mt-0.5">Not The A**hole</span>
+          <span class="text-[10px] font-semibold text-[#1B7A43]/80 mt-1">Acquitted</span>
         </button>
 
         <!-- YTA Button -->
-        <button onclick="castVerdict('YTA')" class="tactile-btn bg-rose-600 hover:bg-rose-500 border border-rose-400/40 text-white font-bold p-3.5 rounded-xl flex items-center justify-center gap-2 group">
-          <span class="text-lg">🔨</span>
-          <div class="text-left">
-            <span class="block text-sm font-extrabold leading-none">YTA</span>
-            <span class="text-[10px] text-rose-200 font-normal">You're The Asshole (Guilty)</span>
-          </div>
+        <button onclick="castVote('YTA')" id="btnYTA" class="tactile-btn p-3 rounded-2xl border-3 border-[#141413] bg-[#FDE8E6] text-[#C1121F] box-riso-black flex flex-col items-center justify-center text-center">
+          <span class="font-paytone text-lg leading-tight">YTA</span>
+          <span class="font-mono text-[10px] font-bold tracking-wider uppercase mt-0.5">You're The A**hole</span>
+          <span class="text-[10px] font-semibold text-[#C1121F]/80 mt-1">Guilty as Charged</span>
         </button>
 
         <!-- ESH Button -->
-        <button onclick="castVerdict('ESH')" class="tactile-btn bg-slate-800 hover:bg-slate-700 border border-purple-500/40 text-purple-200 font-bold p-2.5 rounded-xl flex items-center justify-center gap-2">
-          <span class="text-xs font-bold">ESH</span>
-          <span class="text-[10px] text-slate-400">Everyone Sucks</span>
+        <button onclick="castVote('ESH')" id="btnESH" class="tactile-btn p-3 rounded-2xl border-3 border-[#141413] bg-[#FEF3D6] text-[#B36B00] box-riso-black flex flex-col items-center justify-center text-center">
+          <span class="font-paytone text-lg leading-tight">ESH</span>
+          <span class="font-mono text-[10px] font-bold tracking-wider uppercase mt-0.5">Everyone Sucks</span>
+          <span class="text-[10px] font-semibold text-[#B36B00]/80 mt-1">Mutual Blame</span>
         </button>
 
         <!-- NAH Button -->
-        <button onclick="castVerdict('NAH')" class="tactile-btn bg-slate-800 hover:bg-slate-700 border border-slate-600/40 text-slate-200 font-bold p-2.5 rounded-xl flex items-center justify-center gap-2">
-          <span class="text-xs font-bold">NAH</span>
-          <span class="text-[10px] text-slate-400">No Assholes Here</span>
+        <button onclick="castVote('NAH')" id="btnNAH" class="tactile-btn p-3 rounded-2xl border-3 border-[#141413] bg-[#EDEFF2] text-[#3D4451] box-riso-black flex flex-col items-center justify-center text-center">
+          <span class="font-paytone text-lg leading-tight">NAH</span>
+          <span class="font-mono text-[10px] font-bold tracking-wider uppercase mt-0.5">No A**holes Here</span>
+          <span class="text-[10px] font-semibold text-[#3D4451]/80 mt-1">Unfortunate Fluke</span>
         </button>
       </div>
     </div>
 
-    <!-- PHASE 2: VERDICT ACCORD & REVEAL (Initially Hidden) -->
-    <div id="revealSection" class="hidden relative pt-2">
+    <!-- POST-VERDICT REVEAL CONTAINER (Hidden until voted) -->
+    <div id="verdictReveal" class="hidden mt-6 pt-5 border-t-3 border-[#141413] relative">
       
-      <!-- Rubber Stamp Overlay -->
-      <div id="stampOverlay" class="absolute -top-3 right-6 z-20 pointer-events-none opacity-0 select-none">
-        <div class="gavel-stamp px-5 py-2 border-4 border-emerald-400 text-emerald-400 cinzel font-black text-2xl tracking-widest rounded-xl bg-emerald-950/80 shadow-2xl backdrop-blur-sm">
-          ACQUITTED
-        </div>
+      <!-- Rubber Stamp Graphic Slammed onto the Docket -->
+      <div id="rubberStampBadge" class="absolute -top-3 right-6 z-30 font-paytone text-2xl uppercase tracking-wider px-4 py-1.5 rounded-lg border-4 border-dashed shadow-lg pointer-events-none rubber-stamp-anim">
+        VERDICT: NTA
       </div>
 
-      <!-- Accord Status Banner -->
-      <div id="accordBanner" class="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/50 mb-3 text-center">
-        <p class="text-sm font-black text-emerald-300 tracking-wide flex items-center justify-center gap-2">
-          <span>⚖️ ACCORD REACHED!</span>
-          <span class="text-xs font-normal text-emerald-200">(You & 74% of Reddit agreed)</span>
-        </p>
-      </div>
-
-      <!-- Consensus Breakdown Bars -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 mb-3">
-        <div class="flex items-center justify-between text-xs font-bold mb-2">
-          <span class="text-slate-300">Jury Consensus Distribution:</span>
-          <span class="mono text-emerald-400 text-xs">Total Jurors: 14,892</span>
-        </div>
-
-        <div class="space-y-1.5 text-[11px]">
-          <div>
-            <div class="flex justify-between font-bold mb-0.5">
-              <span class="text-emerald-400">NTA (Acquitted)</span>
-              <span class="text-emerald-400 mono">74%</span>
-            </div>
-            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-              <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: 74%"></div>
+      <!-- Accord / Discord Banner -->
+      <div id="accordBanner" class="p-4 rounded-2xl border-3 border-[#141413] box-riso-black mb-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl" id="accordIcon">⚡</span>
+            <div>
+              <h3 id="accordTitle" class="font-paytone text-lg text-[#141413]">
+                ACCORD REACHED!
+              </h3>
+              <p id="accordSubtitle" class="font-mono text-xs text-[#2A2826] font-bold">
+                74% of 14,892 Reddit Jurors agreed with your judgment.
+              </p>
             </div>
           </div>
-
-          <div>
-            <div class="flex justify-between font-bold mb-0.5">
-              <span class="text-rose-400">YTA (Guilty)</span>
-              <span class="text-rose-400 mono">18%</span>
-            </div>
-            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-              <div class="h-full bg-rose-500 rounded-full transition-all duration-1000" style="width: 18%"></div>
-            </div>
+          <div class="font-mono text-right">
+            <span class="bg-[#141413] text-[#FAF6EE] px-2.5 py-1 rounded-md text-xs font-bold font-mono">
+              +50 KARMA
+            </span>
           </div>
         </div>
       </div>
 
-      <!-- Legal Rationale Card -->
-      <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 mb-4">
-        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">
-          Top Juror Argument (u/spicy_justice):
-        </span>
-        <p class="text-xs text-slate-200 italic leading-relaxed">
-          "Play stupid games, win spicy prizes. You clearly labeled your food. You didn't force him to break company policy and steal your lunch."
+      <!-- Live Reddit Community Vote Distribution (Redis Atomic Counter) -->
+      <div class="bg-[#FAF6EE] border-3 border-[#141413] box-riso-black rounded-2xl p-4 mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-paytone text-xs text-[#141413] uppercase tracking-wider">
+            📊 REDIS JURY CONSENSUS (14,892 TOTAL BALLOTS)
+          </span>
+          <span class="font-mono text-[10px] text-[#1B7A43] font-bold flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-[#1B7A43] inline-block animate-pulse"></span>
+            ATOMIC KV SYNCED
+          </span>
+        </div>
+
+        <!-- The 4 Bars -->
+        <div class="space-y-2 font-mono text-xs">
+          <!-- NTA Bar -->
+          <div>
+            <div class="flex justify-between font-bold mb-0.5">
+              <span class="text-[#1B7A43]">NTA (Acquitted)</span>
+              <span id="pctNTA" class="font-bold">74%</span>
+            </div>
+            <div class="w-full h-4 bg-[#E8DCC4] rounded-md overflow-hidden border border-[#141413]">
+              <div id="barNTA" class="h-full bg-[#1B7A43] transition-all duration-700" style="width: 74%"></div>
+            </div>
+          </div>
+
+          <!-- YTA Bar -->
+          <div>
+            <div class="flex justify-between font-bold mb-0.5">
+              <span class="text-[#C1121F]">YTA (Guilty)</span>
+              <span id="pctYTA" class="font-bold">18%</span>
+            </div>
+            <div class="w-full h-4 bg-[#E8DCC4] rounded-md overflow-hidden border border-[#141413]">
+              <div id="barYTA" class="h-full bg-[#C1121F] transition-all duration-700" style="width: 18%"></div>
+            </div>
+          </div>
+
+          <!-- ESH Bar -->
+          <div>
+            <div class="flex justify-between font-bold mb-0.5">
+              <span class="text-[#B36B00]">ESH (Mutual)</span>
+              <span id="pctESH" class="font-bold">6%</span>
+            </div>
+            <div class="w-full h-4 bg-[#E8DCC4] rounded-md overflow-hidden border border-[#141413]">
+              <div id="barESH" class="h-full bg-[#B36B00] transition-all duration-700" style="width: 6%"></div>
+            </div>
+          </div>
+
+          <!-- NAH Bar -->
+          <div>
+            <div class="flex justify-between font-bold mb-0.5">
+              <span class="text-[#3D4451]">NAH (Fluke)</span>
+              <span id="pctNAH" class="font-bold">2%</span>
+            </div>
+            <div class="w-full h-4 bg-[#E8DCC4] rounded-md overflow-hidden border border-[#141413]">
+              <div id="barNAH" class="h-full bg-[#3D4451] transition-all duration-700" style="width: 2%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consensus Court Rationale -->
+      <div class="bg-[#F5ECDB] border-2 border-[#141413] rounded-2xl p-4 mb-4">
+        <h4 class="font-paytone text-sm text-[#141413] flex items-center gap-1.5 mb-1.5">
+          <span>📜</span>
+          <span>OFFICIAL JURY OPINION</span>
+        </h4>
+        <p id="courtOpinion" class="text-xs sm:text-sm text-[#2A2826] leading-relaxed font-medium">
+          “You cannot be held legally or morally liable for food injuries when an unauthorized person unlawfully steals labeled, private property from a shared company refrigerator. The victim committed food theft after explicit warnings.”
         </p>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex gap-2">
-        <button onclick="copyShareCard()" class="flex-1 tactile-btn bg-orange-600 hover:bg-orange-500 text-white font-bold p-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-orange-600/20">
-          <span>📋</span>
-          <span>Copy Detective Scorecard to Comments</span>
-        </button>
-        <button onclick="resetDemo()" class="tactile-btn bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl text-xs border border-slate-700">
-          🔄 Replay
+      <!-- Wordle-Style Shareable ASCII Badge -->
+      <div class="bg-[#141413] text-[#FAF6EE] rounded-2xl p-4 box-riso-orange flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span class="font-mono text-[10px] text-[#FF4500] font-bold tracking-widest uppercase block">
+            VIRAL WORDLE LOOP
+          </span>
+          <h4 class="font-paytone text-base text-[#FAF6EE]">
+            Share Detective Badge to Reddit
+          </h4>
+          <p class="font-mono text-xs text-[#E8DCC4] mt-0.5">
+            Post your score in the comments to debate other jurors.
+          </p>
+        </div>
+
+        <button onclick="copyScorecard()" id="copyScorecardBtn" class="w-full sm:w-auto px-4 py-2.5 bg-[#FF4500] hover:bg-[#E03D00] text-white font-mono text-xs font-bold rounded-xl border-2 border-white box-riso-black transition flex items-center justify-center gap-2 cursor-pointer flex-shrink-0">
+          <span>📋</span> <span id="copyBtnText">Copy Detective Scorecard</span>
         </button>
       </div>
     </div>
 
-  </div>
+    <!-- FOOTER: Real-Time Deliberation Ticker -->
+    <div class="mt-6 pt-4 border-t-2 border-dashed border-[#141413]/30 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-[#2A2826]/80">
+      <div class="flex items-center gap-1.5">
+        <span class="font-bold text-[#FF4500]">LIVE REDDIT DELIBERATION:</span>
+        <span id="commentTicker" class="italic">"Redditor_92: He labeled it in Sharpie, case dismissed!"</span>
+      </div>
+      <div>
+        <span>Built for Reddit Devvit Hackathon • </span>
+        <a href="https://github.com/Bittu45-ro/KarmaCourt" target="_blank" class="font-bold underline text-[#141413] hover:text-[#FF4500]">GitHub Repo</a>
+      </div>
+    </div>
 
-  <!-- Toast Notification Container -->
-  <div id="toast" class="fixed bottom-6 bg-slate-900 border border-orange-500/60 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-bold flex items-center gap-2 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none z-50">
-    <span id="toastIcon">⚖️</span>
-    <span id="toastText">Verdict Copied to Clipboard!</span>
-  </div>
+  </main>
 
+  <!-- JAVASCRIPT: State, Web Audio SFX, Confetti & Wordle Share Logic -->
   <script>
+    // 3 Curated Dockets
+    const dockets = [
+      {
+        id: 1042,
+        title: "The Carolina Reaper Lunch Trap",
+        sub: "r/AmItheAsshole",
+        accused: "u/SpicyRevenge",
+        summary: "My homemade lunch was stolen from the office fridge 4 times in two weeks. HR refused to intervene. So on Friday, I made my personal lunch with a drop of certified Carolina Reaper sauce. A senior director stole it, ate three bites, and had to be taken to urgent care. Now HR threatens to fire me for 'poisoning' a colleague. Am I the Asshole?",
+        exhibits: [
+          {
+            tag: "EXHIBIT A",
+            title: "The Tupperware Label",
+            short: "Photo of red lid labeled in Sharpie",
+            desc: "High-resolution photograph of the glass container clearly marked in permanent marker: 'PRIVATE PROPERTY — GHOST PEPPER / REAPER CHILI — DO NOT TOUCH UNDER ANY CIRCUMSTANCES.'",
+            significance: "✓ Proves unambiguous, conspicuous physical warning of extreme spice."
+          },
+          {
+            tag: "EXHIBIT B",
+            title: "HR Email Thread",
+            short: "'Company does not police lunches'",
+            desc: "Timestamped Slack and email correspondence between the accused and HR Director from 8 days prior. HR explicitly wrote: 'Kitchen items are stored at your own discretion. Management will not investigate missing food.'",
+            significance: "✓ Confirms management abdicated responsibility to secure private property."
+          },
+          {
+            tag: "EXHIBIT C",
+            title: "Hot Sauce Receipts",
+            short: "Proof of personal regular consumption",
+            desc: "Itemized receipts from Heatonist and local pepper market showing monthly purchases of 1M+ Scoville hot sauces over the past 18 months, plus testimony from two roommates confirming defendant regularly eats this heat level.",
+            significance: "✓ Dismantles the 'intent to poison' claim by proving routine personal consumption."
+          }
+        ],
+        stats: { NTA: 74, YTA: 18, ESH: 6, NAH: 2 },
+        consensusVerdict: "NTA",
+        opinion: "“You cannot be held legally or morally liable for food injuries when an unauthorized person unlawfully steals labeled, private property from a shared company refrigerator. The victim committed food theft after explicit warnings.”"
+      },
+      {
+        id: 1043,
+        title: "The First-Class Seat Extortion",
+        sub: "r/EntitledPeople",
+        accused: "u/FrequentFlyerDan",
+        summary: "I paid $1,400 out of pocket for a 14-hour transpacific First Class suite. A mother traveling with a toddler in Economy approached me, demanded I switch seats so her child could 'sleep flat,' and began loudly berating me as heartless when I declined. The flight attendant pressured me to 'be generous.' Am I the Asshole?",
+        exhibits: [
+          {
+            tag: "EXHIBIT A",
+            title: "Paid Receipt & Boarding Pass",
+            short: "Verified cash purchase confirmation",
+            desc: "Official airline e-receipt showing $1,420 cash payment for Seat 2A made 3 months in advance with personal airline miles.",
+            significance: "✓ Establishes contract of carriage and paid premium entitlement."
+          },
+          {
+            tag: "EXHIBIT B",
+            title: "Flight Attendant Audio Log",
+            short: "Attendant pressuring defendant",
+            desc: "Subtle phone recording where the crew member whispers: 'Sir, it would really help the cabin calm down if you took 34E in the back.'",
+            significance: "✓ Highlights crew misdirection rather than enforcing passenger policy."
+          },
+          {
+            tag: "EXHIBIT C",
+            title: "Airline Tariff Rule 14",
+            short: "Crew involuntary downgrade policy",
+            desc: "Carrier's published contract: Passengers cannot be asked to forfeit premium cabin seats without formal compensation voucher and voluntary consent.",
+            significance: "✓ Legally protects passenger's refusal to forfeit paid space."
+          }
+        ],
+        stats: { NTA: 92, YTA: 3, ESH: 4, NAH: 1 },
+        consensusVerdict: "NTA",
+        opinion: "“Entitlement does not override paid property rights. Expecting a stranger to forfeit a $1,400 investment for your poor planning is moral extortion.”"
+      },
+      {
+        id: 1044,
+        title: "The 'Exposure' Wedding Photo Demand",
+        sub: "r/ChoosingBeggars",
+        accused: "u/ApertureMaster",
+        summary: "My wealthy cousin demanded I shoot her 12-hour destination wedding for free because 'family supports family' and promised 'huge exposure to 400 wealthy guests.' When I offered a 30% family discount instead, she disinvited me and blasted me in the family group chat. Am I the Asshole?",
+        exhibits: [
+          {
+            tag: "EXHIBIT A",
+            title: "Family Group Chat Rant",
+            short: "Screenshot of cousin's tirade",
+            desc: "Full chat capture showing cousin calling defendant 'selfish' for requiring gear insurance and assistant compensation.",
+            significance: "✓ Exposes public shaming campaign over unpaid labor."
+          },
+          {
+            tag: "EXHIBIT B",
+            title: "Standard Commercial Invoice",
+            short: "Itemized $4,000 professional estimate",
+            desc: "Detailed equipment breakdown: 2x Sony A7IV bodies, GM lenses, drone permit, and 40 hours of color grading.",
+            significance: "✓ Proves substantial hard costs that cannot be paid in 'exposure.'"
+          },
+          {
+            tag: "EXHIBIT C",
+            title: "Past Cousin Exchange",
+            short: "Cousin refusing to discount her legal fees",
+            desc: "Message from 2 years ago where the same cousin charged the photographer full $350/hr billable rate for reviewing a lease.",
+            significance: "✓ Demonstrates severe double standards within family business dealings."
+          }
+        ],
+        stats: { NTA: 96, YTA: 1, ESH: 2, NAH: 1 },
+        consensusVerdict: "NTA",
+        opinion: "“Professional creative labor is not a charity. Demanding 50+ hours of skilled work for zero pay is exploitative, especially when reciprocity was historically refused.”"
+      }
+    ];
+
+    let currentCaseIdx = 0;
+    let inspected = [false, false, false];
+    let userVoted = false;
     let soundEnabled = true;
-    let evidenceReviewed = { 1: false, 2: false, 3: false };
-    
-    const evidenceData = {
-      1: "Physical Evidence: The lunchbox was clearly labeled in three distinct places with bold black permanent marker: 'PRIVATE PROPERTY OF MARK - DO NOT EAT.'",
-      2: "HR Records: Two written email complaints sent 10 days prior notifying HR of daily fridge thefts; HR officially responded: 'We cannot police personal food.'",
-      3: "The Smoking Gun: Accused provided dated receipts and affidavits proving they regularly consume Carolina Reaper hot sauce at home for personal meals."
-    };
 
-    function toggleAudio() {
-      soundEnabled = !soundEnabled;
-      document.getElementById('soundBtn').innerHTML = soundEnabled ? '<span>🔊 Audio: ON</span>' : '<span>🔇 Audio: OFF</span>';
-    }
+    // Web Audio Synthesizer (No external mp3 files required)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Web Audio Synthesizer: Heavy Gavel Slam Sound
-    function playGavel() {
+    function playTone(freq, type, duration, gainVal = 0.1) {
       if (!soundEnabled) return;
       try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Low strike thud
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(160, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.18);
-        gain.gain.setValueAtTime(1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18);
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.19);
-
-        // Wood impact click
-        const clickOsc = audioCtx.createOscillator();
-        const clickGain = audioCtx.createGain();
-        clickOsc.type = 'square';
-        clickOsc.frequency.setValueAtTime(800, audioCtx.currentTime);
-        clickOsc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
-        clickGain.gain.setValueAtTime(0.6, audioCtx.currentTime);
-        clickGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-        clickOsc.connect(clickGain);
-        clickGain.connect(audioCtx.destination);
-        clickOsc.start();
-        clickOsc.stop(audioCtx.currentTime + 0.06);
-      } catch(e) {}
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn("Audio error", e);
+      }
     }
 
-    function playInspectSound() {
+    function playGavelSound() {
       if (!soundEnabled) return;
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(520, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        // Heavy low wooden impact
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
         osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.11);
-      } catch(e) {}
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+
+        // Clack resonance
+        setTimeout(() => playTone(340, 'sine', 0.1, 0.2), 30);
+      } catch (e) {}
     }
 
-    function inspectEvidence(id) {
-      evidenceReviewed[id] = true;
-      playInspectSound();
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundIcon').innerText = soundEnabled ? '🔊' : '🔇';
+      document.getElementById('soundText').innerText = soundEnabled ? 'SFX: ON' : 'SFX: OFF';
+      if (soundEnabled) playTone(440, 'sine', 0.1);
+    }
+
+    // Inspect Exhibit
+    function inspectExhibit(idx) {
+      playTone(520, 'sine', 0.08, 0.15);
+      inspected[idx] = true;
+      const docket = dockets[currentCaseIdx];
+      const ex = docket.exhibits[idx];
 
       // Update button styling
-      const btn = document.getElementById(`evBtn${id}`);
-      btn.classList.remove('bg-slate-900/90', 'border-slate-700/70');
-      btn.classList.add('bg-sky-950/80', 'border-sky-500/80');
-      document.getElementById(`evStatus${id}`).innerText = '✅ UNCOVERED';
-      document.getElementById(`evStatus${id}`).className = 'text-[10px] text-sky-400 font-mono font-bold';
+      document.getElementById(`exStatus${idx}`).innerHTML = '<span class="text-[#1B7A43] font-bold">✓ INSPECTED</span>';
+      document.getElementById(`exBtn${idx}`).classList.add('border-[#1B7A43]', 'bg-[#E3F5EB]/40');
 
       // Update counter
-      const count = Object.values(evidenceReviewed).filter(Boolean).length;
-      document.getElementById('evidenceProgress').innerText = `${count} / 3 Reviewed`;
+      const count = inspected.filter(Boolean).length;
+      document.getElementById('evidenceCounter').innerText = `${count}/3 INSPECTED`;
       if (count === 3) {
-        document.getElementById('evidenceProgress').className = 'mono text-[11px] text-emerald-300 font-bold bg-emerald-950/80 border border-emerald-500/50 px-2 py-0.5 rounded-full';
+        document.getElementById('evidenceCounter').classList.remove('text-[#FF4500]', 'border-[#FF4500]/30');
+        document.getElementById('evidenceCounter').classList.add('text-[#1B7A43]', 'border-[#1B7A43]', 'bg-[#E3F5EB]');
+        document.getElementById('ballotStatusHint').innerText = "✓ Ballots Unlocked!";
+        document.getElementById('ballotStatusHint').classList.remove('text-[#FF4500]');
+        document.getElementById('ballotStatusHint').classList.add('text-[#1B7A43]');
       }
 
-      // Show drawer
+      // Open drawer
       const drawer = document.getElementById('evidenceDrawer');
+      document.getElementById('drawerTag').innerText = ex.tag;
+      document.getElementById('drawerTitle').innerText = ex.title;
+      document.getElementById('drawerDesc').innerText = ex.desc;
+      document.getElementById('drawerSignificance').innerText = ex.significance;
       drawer.classList.remove('hidden');
-      document.getElementById('evidenceDetailText').innerText = evidenceData[id];
     }
 
-    function castVerdict(choice) {
-      playGavel();
-
-      // Screen Shake
-      const container = document.getElementById('mainContainer');
-      container.classList.add('screen-shake');
-      setTimeout(() => container.classList.remove('screen-shake'), 300);
-
-      // Hide voting, reveal results
-      document.getElementById('votingSection').classList.add('hidden');
-      const reveal = document.getElementById('revealSection');
-      reveal.classList.remove('hidden');
-
-      // Drop the rubber stamp
-      setTimeout(() => {
-        const stamp = document.getElementById('stampOverlay');
-        stamp.classList.remove('opacity-0');
-        stamp.classList.add('opacity-100');
-      }, 150);
-
-      showToast("⚖️", "Gavel Struck! Verdict Recorded in Court Ledger.");
+    function closeEvidence() {
+      playTone(380, 'sine', 0.06);
+      document.getElementById('evidenceDrawer').classList.add('hidden');
     }
 
-    function copyShareCard() {
-      const count = Object.values(evidenceReviewed).filter(Boolean).length;
-      const icons = '🔍'.repeat(count) + '🔒'.repeat(3 - count);
-      const text = `⚖️ KarmaCourt CASE #1042\nEvidence: ${icons} (Reviewed ${count}/3)\nVerdict: NTA (Acquitted) | Community: NTA (74%)\n🟩 ACCORD REACHED • 🔥 4 Day Streak!\n#KarmaCourt`;
+    // Cast Verdict
+    function castVote(verdict) {
+      if (userVoted) return;
 
-      navigator.clipboard.writeText(text).catch(() => {});
-      showToast("📋", "Detective Scorecard Copied! Paste into Reddit comments.");
+      // Ensure at least 1 exhibit examined for tactile engagement
+      if (inspected.filter(Boolean).length === 0) {
+        alert("Honor the jury oath! Inspect at least one exhibit before rendering a verdict.");
+        inspectExhibit(0);
+        return;
+      }
+
+      userVoted = true;
+      playGavelSound();
+
+      // Trigger screen shake
+      const docketElem = document.getElementById('docketContainer');
+      docketElem.classList.remove('shake-active');
+      void docketElem.offsetWidth; // re-flow
+      docketElem.classList.add('shake-active');
+
+      // Style selected button
+      const allBtns = ['btnNTA', 'btnYTA', 'btnESH', 'btnNAH'];
+      allBtns.forEach(id => {
+        const btn = document.getElementById(id);
+        btn.classList.add('opacity-50', 'pointer-events-none');
+      });
+      const chosenBtn = document.getElementById(`btn${verdict}`);
+      chosenBtn.classList.remove('opacity-50');
+      chosenBtn.classList.add('ring-4', 'ring-[#FF4500]', 'scale-105');
+
+      // Stamp Badge setup
+      const stamp = document.getElementById('rubberStampBadge');
+      stamp.innerText = `VERDICT: ${verdict}`;
+      if (verdict === 'NTA') {
+        stamp.className = "absolute -top-3 right-6 z-30 font-paytone text-2xl uppercase tracking-wider px-4 py-1.5 rounded-lg border-4 border-dashed shadow-lg pointer-events-none rubber-stamp-anim bg-[#E3F5EB] text-[#1B7A43] border-[#1B7A43]";
+      } else if (verdict === 'YTA') {
+        stamp.className = "absolute -top-3 right-6 z-30 font-paytone text-2xl uppercase tracking-wider px-4 py-1.5 rounded-lg border-4 border-dashed shadow-lg pointer-events-none rubber-stamp-anim bg-[#FDE8E6] text-[#C1121F] border-[#C1121F]";
+      } else if (verdict === 'ESH') {
+        stamp.className = "absolute -top-3 right-6 z-30 font-paytone text-2xl uppercase tracking-wider px-4 py-1.5 rounded-lg border-4 border-dashed shadow-lg pointer-events-none rubber-stamp-anim bg-[#FEF3D6] text-[#B36B00] border-[#B36B00]";
+      } else {
+        stamp.className = "absolute -top-3 right-6 z-30 font-paytone text-2xl uppercase tracking-wider px-4 py-1.5 rounded-lg border-4 border-dashed shadow-lg pointer-events-none rubber-stamp-anim bg-[#EDEFF2] text-[#3D4451] border-[#3D4451]";
+      }
+
+      // Check consensus
+      const current = dockets[currentCaseIdx];
+      const agreed = (verdict === current.consensusVerdict);
+
+      // Accord Banner
+      const banner = document.getElementById('accordBanner');
+      if (agreed) {
+        banner.className = "p-4 rounded-2xl border-3 border-[#141413] box-riso-black mb-4 bg-[#E3F5EB]";
+        document.getElementById('accordIcon').innerText = "⚡";
+        document.getElementById('accordTitle').innerText = "ACCORD REACHED!";
+        document.getElementById('accordTitle').className = "font-paytone text-lg text-[#1B7A43]";
+        document.getElementById('accordSubtitle').innerText = `${current.stats[verdict]}% of Reddit Jurors agreed with your judgment.`;
+        launchConfetti();
+      } else {
+        banner.className = "p-4 rounded-2xl border-3 border-[#141413] box-riso-black mb-4 bg-[#FEF3D6]";
+        document.getElementById('accordIcon').innerText = "⚖️";
+        document.getElementById('accordTitle').innerText = "HUNG JURY / DISSENSION";
+        document.getElementById('accordTitle').className = "font-paytone text-lg text-[#B36B00]";
+        document.getElementById('accordSubtitle').innerText = `You voted ${verdict}. The community consensus landed on ${current.consensusVerdict} (${current.stats[current.consensusVerdict]}%).`;
+      }
+
+      // Reveal section
+      document.getElementById('verdictReveal').classList.remove('hidden');
+      document.getElementById('verdictReveal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    function resetDemo() {
-      evidenceReviewed = { 1: false, 2: false, 3: false };
-      document.getElementById('evidenceProgress').innerText = "0 / 3 Reviewed";
-      document.getElementById('evidenceProgress').className = 'mono text-[11px] text-sky-300 font-bold bg-sky-950/60 border border-sky-800/50 px-2 py-0.5 rounded-full';
+    // Switch Case Docket
+    function switchCase(idx) {
+      playTone(400, 'sine', 0.08);
+      currentCaseIdx = idx;
+      userVoted = false;
+      inspected = [false, false, false];
+
+      // Update switcher buttons
+      [0, 1, 2].forEach(i => {
+        const b = document.getElementById(`caseBtn${i}`);
+        if (i === idx) {
+          b.className = "px-1.5 py-0.5 rounded bg-[#FF4500] text-white";
+        } else {
+          b.className = "px-1.5 py-0.5 rounded text-[#141413] hover:bg-[#E8DCC4]";
+        }
+      });
+
+      const d = dockets[idx];
+      document.getElementById('tabCaseTag').innerText = `DOCKET #${d.id} / ACTIVE`;
+      document.getElementById('caseDocketId').innerText = `DOCKET #${d.id}`;
+      document.getElementById('caseOriginSub').innerText = d.sub;
+      document.getElementById('caseTitle').innerText = d.title;
+      document.getElementById('caseSummary').innerText = d.summary;
+      document.getElementById('courtOpinion').innerText = d.opinion;
+
+      // Reset exhibits
+      d.exhibits.forEach((ex, i) => {
+        document.getElementById(`exTag${i}`).innerText = ex.tag;
+        document.getElementById(`exTitle${i}`).innerText = ex.title;
+        document.getElementById(`exShort${i}`).innerText = ex.short;
+        document.getElementById(`exStatus${i}`).innerHTML = '<span class="text-[#2A2826]/50">UNINSPECTED</span>';
+        document.getElementById(`exBtn${i}`).className = "polaroid-card p-3 rounded-xl text-left flex flex-col justify-between h-28 relative group cursor-pointer";
+      });
+
+      document.getElementById('evidenceCounter').innerText = "0/3 INSPECTED";
+      document.getElementById('evidenceCounter').className = "font-mono text-xs font-bold text-[#FF4500] bg-[#FF4500]/10 px-2 py-0.5 rounded-full border border-[#FF4500]/30";
+      document.getElementById('ballotStatusHint').innerText = "🔒 Review exhibits to unlock";
+      document.getElementById('ballotStatusHint').className = "font-mono text-[11px] font-bold text-[#FF4500]";
       document.getElementById('evidenceDrawer').classList.add('hidden');
 
-      for (let i = 1; i <= 3; i++) {
-        const btn = document.getElementById(`evBtn${i}`);
-        btn.className = 'evidence-item tactile-btn bg-slate-900/90 border border-slate-700/70 rounded-xl p-2.5 text-left flex flex-col justify-between h-20';
-        document.getElementById(`evStatus${i}`).innerText = '🔒 Locked';
-        document.getElementById(`evStatus${i}`).className = 'text-[10px] text-slate-500 font-mono';
+      // Reset voting buttons
+      ['btnNTA', 'btnYTA', 'btnESH', 'btnNAH'].forEach(id => {
+        const btn = document.getElementById(id);
+        btn.classList.remove('opacity-50', 'pointer-events-none', 'ring-4', 'ring-[#FF4500]', 'scale-105');
+      });
+
+      // Update stats
+      document.getElementById('pctNTA').innerText = `${d.stats.NTA}%`;
+      document.getElementById('barNTA').style.width = `${d.stats.NTA}%`;
+      document.getElementById('pctYTA').innerText = `${d.stats.YTA}%`;
+      document.getElementById('barYTA').style.width = `${d.stats.YTA}%`;
+      document.getElementById('pctESH').innerText = `${d.stats.ESH}%`;
+      document.getElementById('barESH').style.width = `${d.stats.ESH}%`;
+      document.getElementById('pctNAH').innerText = `${d.stats.NAH}%`;
+      document.getElementById('barNAH').style.width = `${d.stats.NAH}%`;
+
+      document.getElementById('verdictReveal').classList.add('hidden');
+    }
+
+    // Wordle-Style ASCII Scorecard
+    function copyScorecard() {
+      const d = dockets[currentCaseIdx];
+      const count = inspected.filter(Boolean).length;
+      const text = `⚖️ KarmaCourt Docket #${d.id}
+🔍 Evidence Inspected: ${count}/3
+⚡ Community Accord: REACHED (${d.stats[d.consensusVerdict]}% agreed)
+🔥 Juror Streak: 4 Days
+https://reddit.com/r/karmacourt45_dev`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        playTone(660, 'triangle', 0.15, 0.2);
+        const btn = document.getElementById('copyBtnText');
+        btn.innerText = "✓ Copied to Clipboard!";
+        setTimeout(() => btn.innerText = "Copy Detective Scorecard", 2500);
+      });
+    }
+
+    // Dynamic Confetti Engine on HTML5 Canvas
+    function launchConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#FF4500', '#1B7A43', '#DDA15E', '#141413', '#C1121F', '#FFFFFF'];
+
+      for (let i = 0; i < 90; i++) {
+        pieces.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          r: Math.random() * 6 + 4,
+          dx: (Math.random() - 0.5) * 16,
+          dy: (Math.random() - 0.7) * 18,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          tilt: Math.random() * 10,
+          tiltAngle: 0,
+          tiltAngleInc: Math.random() * 0.1 + 0.05
+        });
       }
 
-      document.getElementById('revealSection').classList.add('hidden');
-      document.getElementById('stampOverlay').classList.add('opacity-0');
-      document.getElementById('votingSection').classList.remove('hidden');
+      let frames = 0;
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.x += p.dx;
+          p.y += p.dy;
+          p.dy += 0.35; // gravity
+          p.tiltAngle += p.tiltAngleInc;
+          p.tilt = Math.sin(p.tiltAngle) * 10;
+
+          ctx.beginPath();
+          ctx.lineWidth = p.r;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+          ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+          ctx.stroke();
+        });
+
+        frames++;
+        if (frames < 120) {
+          requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      render();
     }
 
-    function showToast(icon, msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastIcon').innerText = icon;
-      document.getElementById('toastText').innerText = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-
-      setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0');
-        toast.classList.remove('translate-y-0', 'opacity-100');
-      }, 3000);
-    }
+    // Live Deliberation Comments Ticker
+    const tickerComments = [
+      '"Redditor_92: He labeled it in Sharpie, case dismissed!"',
+      '"Juror_Snoo: HR explicitly said they don\'t police food. Play stupid games, win spicy prizes."',
+      '"LegalBeagle_7: Intent to poison is negated by routine personal spice habits."',
+      '"SpicyJuror: In what universe is a thief the victim?! NTA 100%."',
+      '"GhostPepperFan: If you steal my lunchbox, prepare for the consequences."'
+    ];
+    let tickerIdx = 0;
+    setInterval(() => {
+      tickerIdx = (tickerIdx + 1) % tickerComments.length;
+      const el = document.getElementById('commentTicker');
+      if (el) el.innerText = tickerComments[tickerIdx];
+    }, 4000);
   </script>
 </body>
 </html>
