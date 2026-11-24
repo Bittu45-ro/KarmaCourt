@@ -1,6 +1,15 @@
 {
-  "name": "karmacourt",
-  "blocks": {
-    "entry": "src/main.tsx"
+  "name": "karmacourt45",
+  "post": {
+    "dir": "webroot",
+    "entrypoints": {
+      "default": {
+        "entry": "index.html",
+        "height": "tall"
+      }
+    }
+  },
+  "dev": {
+    "subreddit": "karmacourt45_dev"
   }
 }

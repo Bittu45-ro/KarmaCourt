@@ -1,6 +1,6 @@
 {
-  "name": "karmacourt",
-  "version": "0.1.0",
+  "name": "karmacourt45",
+  "version": "0.0.0",
   "description": "KarmaCourt: The Daily Reddit Trial - Interactive Daily Dilemma Game for Devvit",
   "main": "src/main.tsx",
   "type": "module",
@@ -12,9 +12,11 @@
     "lint": "eslint src/ --ext .ts,.tsx"
   },
   "dependencies": {
-    "@devvit/public-api": "^0.11.0"
+    "@devvit/public-api": "0.15.6"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
-  }
+    "typescript": "npm:@typescript/typescript6@6.0.2"
+  },
+  "private": true,
+  "license": "BSD-3-Clause"
 }
