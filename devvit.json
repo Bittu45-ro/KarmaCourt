@@ -1,0 +1,6 @@
+{
+  "name": "karmacourt",
+  "blocks": {
+    "entry": "src/main.tsx"
+  }
+}
