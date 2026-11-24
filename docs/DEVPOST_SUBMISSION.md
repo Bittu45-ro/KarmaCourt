@@ -29,7 +29,7 @@ Upload: `C:\Users\admin\Downloads\karmacourt_thumbnail.png`
 - **Video Demo URL:**  
   *(Insert your unlisted YouTube or Loom link here)*
 - **Try it Out / Reddit App Link:**  
-  *(Insert the link to your test post on Reddit created via `devvit playtest`)*
+  `https://www.reddit.com/r/karmacourt45_dev/?playtest=karmacourt45`
 
 ---
 
